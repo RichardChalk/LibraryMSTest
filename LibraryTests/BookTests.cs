@@ -1,14 +1,19 @@
 using Library;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace LibraryTests
 {
     [TestClass]
     public class BookTests
     {
-        private readonly Book _sut;
+        private readonly List<Book> _sut;
         public BookTests()
         {
-            _sut = new Book("123", "Test Author", "Test Title");
+            _sut = new List<Book>
+            {
+                new Book("12223","Nils Nilsson", "Fantastiska dikter"),
+                new Book("55551234","Åsa Åsasson", "Mina bästa TV-spel")
+            };
         }
 
         //1. att det inte går att låna en bok ifall alla är utlånade
@@ -16,26 +21,20 @@ namespace LibraryTests
         public void Cannot_Loan_Book_If_All_Are_Loaned_ReturnsFalse()
         {
             // Arrange
-            var books = new List<Book>
-            {
-                new Book("12223","Nils Nilsson", "Fantastiska dikter"),
-                new Book("55551234","Åsa Åsasson", "Mina bästa TV-spel")
-            };
-
-            books[1].BuyNewEx(2);
+            _sut[1].BuyNewEx(2);
 
             var borrower1 = "Richard";
-            if (books[1].IsBorrower(borrower1) == false)
-                books[1].Borrow(borrower1);
+            if (_sut[1].IsBorrower(borrower1) == false)
+                _sut[1].Borrow(borrower1);
 
             var borrower2 = "Stefan";
-            if (books[1].IsBorrower(borrower2) == false)
-                books[1].Borrow(borrower2);
+            if (_sut[1].IsBorrower(borrower2) == false)
+                _sut[1].Borrow(borrower2);
 
             var borrower3 = "No book left!";
 
             // Act
-            bool result = _sut.Borrow(borrower3);
+            bool result = _sut[1].Borrow(borrower3);
 
             // Assert
             // (expected , received)
@@ -47,19 +46,13 @@ namespace LibraryTests
         public void Become_Borrower_When_Loaning_Book_ReturnsTrue()
         {
             // Arrange
-            var books = new List<Book>
-            {
-                new Book("12223","Nils Nilsson", "Fantastiska dikter"),
-                new Book("55551234","Åsa Åsasson", "Mina bästa TV-spel")
-            };
-
-            books[0].BuyNewEx(1);
+            _sut[0].BuyNewEx(1);
             var borrower = "Richard";
 
             // Act
             bool result = false;
-            if (books[0].IsBorrower(borrower) == false)
-                result = books[0].Borrow(borrower);
+            if (_sut[0].IsBorrower(borrower) == false)
+                result = _sut[0].Borrow(borrower);
 
             // Assert
             // (expected , received)
@@ -71,18 +64,12 @@ namespace LibraryTests
         public void Number_Of_Books_Increases_When_Ordered()
         {
             // Arrange
-            var books = new List<Book>
-            {
-                new Book("12223","Nils Nilsson", "Fantastiska dikter"),
-                new Book("55551234","Åsa Åsasson", "Mina bästa TV-spel")
-            };
-
-            books[0].BuyNewEx(1);
-            books[0].BuyNewEx(9);
+            _sut[0].BuyNewEx(1);
+            _sut[0].BuyNewEx(9);
             var expectedNumberOfBooks = 10; // 1 + 9
 
             // Act
-            var result = books[0].Count;
+            var result = _sut[0].Count;
 
             // Assert
             // (expected , received)
